@@ -20,16 +20,13 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<CommonResponseDTO> signup(@Validated @RequestBody SignupRequestDTO signupRequesetDTO){
+    public ResponseEntity<Object> signup(@Validated @RequestBody SignupRequestDTO signupRequesetDTO){
         userService.signup(signupRequesetDTO);
-        return ResponseEntity.status(HttpStatus.OK.value()).
-                body(CommonResponseDTO.builder().msg("회원가입 성공").status(HttpStatus.OK.value()).build());
+        return new ResponseEntity<>("회원가입 성공", HttpStatus.OK);
     }
     @PostMapping ("/check/username")
-    public ResponseEntity<CommonResponseDTO> checkUsername(@RequestBody CheckUsernameRequestDTO checkUsernameRequestDTO){
+    public ResponseEntity<Object> checkUsername(@RequestBody CheckUsernameRequestDTO checkUsernameRequestDTO){
         userService.checkUsername(checkUsernameRequestDTO);
-        return ResponseEntity.status(HttpStatus.OK.value()).
-                body(CommonResponseDTO.builder().msg("중복된 아이디가 없습니다. 회원가입 가능합니다.").
-                        status(HttpStatus.OK.value()).build());
+        return new ResponseEntity<>("중복된 아이디가 없습니다. 회원가입 가능합니다.", HttpStatus.OK);
     }
 }
