@@ -1,6 +1,7 @@
 package com.taeho.myfavorite.user.service;
 
 import com.taeho.myfavorite.user.dto.CheckUsernameRequestDTO;
+import com.taeho.myfavorite.user.dto.LoginRequestDTO;
 import com.taeho.myfavorite.user.dto.SignupRequestDTO;
 import com.taeho.myfavorite.user.entity.User;
 import com.taeho.myfavorite.user.repository.UserRepository;
@@ -34,10 +35,16 @@ public class UserService {
         String username = checkUsernameRequestDTO.getUsername();
         checkDuplication(username);
     }
-    public User findUser(Long userid){
-        User user = userRepository.findById(userid).
+
+    public void login(LoginRequestDTO loginRequestDTO) {
+        String username = loginRequestDTO.getUsername();
+        String password = loginRequestDTO.getPassword();
+        findUser(username);
+
+    }
+    public User findUser(String username){
+        return userRepository.findByUsername(username).
                 orElseThrow(()-> new IllegalArgumentException("해당 유저는 없습니다."));
-        return user;
     }
 
     public void checkDuplication(String username){

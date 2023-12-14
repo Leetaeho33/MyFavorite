@@ -2,6 +2,7 @@ package com.taeho.myfavorite.user.controller;
 
 
 import com.taeho.myfavorite.user.dto.CheckUsernameRequestDTO;
+import com.taeho.myfavorite.user.dto.LoginRequestDTO;
 import com.taeho.myfavorite.user.dto.SignupRequestDTO;
 import com.taeho.myfavorite.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +28,10 @@ public class UserController {
     public ResponseEntity<Object> checkUsername(@RequestBody CheckUsernameRequestDTO checkUsernameRequestDTO){
         userService.checkUsername(checkUsernameRequestDTO);
         return new ResponseEntity<>("중복된 아이디가 없습니다. 회원가입 가능합니다.", HttpStatus.OK);
+    }
+    @PostMapping("/login")
+    public ResponseEntity<Object> login(@RequestBody LoginRequestDTO loginRequestDTO){
+        userService.login(loginRequestDTO);
+        return new ResponseEntity<>("로그인 완료", HttpStatus.OK);
     }
 }
