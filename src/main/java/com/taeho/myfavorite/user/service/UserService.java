@@ -22,22 +22,17 @@ public class UserService {
         String nickname= signupRequesetDTO.getNickname();
         User user = User.builder().username(username).password(password).nickname(nickname).build();
 
+        checkDuplication(username);
         // Repository에 save
-        if(checkDuplication(username)){
-            throw new IllegalArgumentException("중복된 회원이 있습니다.");
-        }
         if(password.contains(username)){
             throw new IllegalArgumentException("비밀번호에는 아이디가 포함되면 안됩니다.");
         }
         userRepository.save(user);
     }
 
-
     public void checkUsername(CheckUsernameRequestDTO checkUsernameRequestDTO) {
         String username = checkUsernameRequestDTO.getUsername();
-        if(checkDuplication(username)) {
-            throw new IllegalArgumentException("중복된 회원이 있습니다.");
-        }
+        checkDuplication(username);
     }
     public User findUser(Long userid){
         User user = userRepository.findById(userid).
@@ -45,8 +40,8 @@ public class UserService {
         return user;
     }
 
-    public boolean checkDuplication(String username){
+    public void checkDuplication(String username){
         Optional<User> user = userRepository.findByUsername(username);
-        return user.isPresent();
+        if(user.isPresent()) throw new IllegalArgumentException("중복된 회원이 있습니다.");
     }
 }
