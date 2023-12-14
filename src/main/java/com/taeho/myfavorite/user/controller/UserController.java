@@ -1,7 +1,6 @@
 package com.taeho.myfavorite.user.controller;
 
 
-import com.taeho.myfavorite.global.dto.CommonResponseDTO;
 import com.taeho.myfavorite.user.dto.CheckUsernameRequestDTO;
 import com.taeho.myfavorite.user.dto.SignupRequestDTO;
 import com.taeho.myfavorite.user.service.UserService;
