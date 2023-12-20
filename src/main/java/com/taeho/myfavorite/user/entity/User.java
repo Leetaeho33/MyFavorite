@@ -1,5 +1,6 @@
 package com.taeho.myfavorite.user.entity;
 
+import com.taeho.myfavorite.post.entity.Post;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -7,6 +8,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -25,6 +28,9 @@ public class User {
 
     @Column
     private String nickname;
+    @Column
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    private List<Post> postList;
 
     @Builder
     public User(String username, String password, String nickname) {
