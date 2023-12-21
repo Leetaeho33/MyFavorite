@@ -23,14 +23,14 @@ public class PostController {
                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
         return ResponseEntity.status(HttpStatus.OK).body(postService.post(postRequestDTO, userDetails.getUser()));
     }
-    @PutMapping("/{postId}")
+    @PutMapping("/post/{postId}")
     public ResponseEntity<Object> update(@RequestBody PostRequestDTO postRequestDTO,
                                          @AuthenticationPrincipal UserDetailsImpl userDetails,
                                          @PathVariable Long postId){
         return ResponseEntity.status(HttpStatus.OK).body(postService.update(postRequestDTO, userDetails.getUser(), postId));
     }
 
-    @DeleteMapping("/{postId}")
+    @DeleteMapping("/post/{postId}")
     public ResponseEntity<Object> delete(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                          @PathVariable Long postId){
         postService.delete(userDetails.getUser(), postId);

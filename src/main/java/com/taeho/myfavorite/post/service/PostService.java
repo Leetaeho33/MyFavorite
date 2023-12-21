@@ -41,6 +41,13 @@ public class PostService {
     }
 
     @Transactional
+    @Scheduled(cron = "0/30 * * * * ?")
+    public void authDelete(){
+        log.info("게시글 자동 삭제");
+        postRepository.deleteByCreatedAtLessThanEqual(LocalDateTime.now().minusHours(1));
+    }
+
+    @Transactional
     public void delete(User user, Long postId) {
         Post post = checkAuthorization(user.getUsername(), postId);
         postRepository.delete(post);
@@ -57,27 +64,20 @@ public class PostService {
         return postResponseDTOList;
     }
 
-    @Transactional
-    @Scheduled(cron = "0/30 * * * * ?")
-    public void authDelete(){
-        log.info("게시글 자동 삭제");
-        postRepository.deleteByCreatedAtLessThanEqual(LocalDateTime.now().minusMinutes(1));
-    }
-
-    private Post findPostById(Long postId){
+    public Post findPostById(Long postId){
         log.info("게시물 검색");
         return postRepository.findById(postId).orElseThrow(
                 ()-> new IllegalArgumentException("해당 게시물은 존재하지 않습니다."));
     }
 
-    private boolean checkAuthor(String username, Long postId){
+    public boolean checkAuthor(String username, Long postId){
         log.info("작성자 확인");
         if(findPostById(postId).getUser().getUsername().equals(username)){
             return true;
         }else throw new IllegalArgumentException("작성자만 접근할 수 있습니다.");
     }
 
-    private Post checkAuthorization(String username, Long postId){
+    public Post checkAuthorization(String username, Long postId){
         Post post = findPostById(postId);
         checkAuthor(username, postId);
         log.info("게시글 및 작성자 확인 완료");
