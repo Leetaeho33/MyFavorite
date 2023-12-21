@@ -1,5 +1,6 @@
 package com.taeho.myfavorite.user.entity;
 
+import com.taeho.myfavorite.comment.entity.Comment;
 import com.taeho.myfavorite.post.entity.Post;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -31,6 +32,10 @@ public class User {
     @Column
     @OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     private List<Post> postList;
+
+    @Column
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    private List<Comment> commentList;
 
     @Builder
     public User(String username, String password, String nickname) {
