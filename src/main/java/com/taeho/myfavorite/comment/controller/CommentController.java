@@ -29,4 +29,11 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).
                 body(commentService.update(requestDTO, userDetails.getUser(), commentId));
     }
+    @DeleteMapping("/comment/{commentId}")
+    public ResponseEntity<Object> delete(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                         @PathVariable Long commentId){
+        commentService.delete(userDetails.getUser(), commentId);
+        return ResponseEntity.status(HttpStatus.OK).
+                body("댓글 삭제 완료");
+    }
 }

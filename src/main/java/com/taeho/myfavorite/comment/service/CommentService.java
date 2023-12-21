@@ -38,14 +38,24 @@ public class CommentService {
         return new CommenetResponseDTO(comment);
     }
 
+    @Transactional
+    public void delete(User user, Long commentId) {
+        log.info("댓글 삭제 시작");
+        Comment comment = findCommentById(commentId);
+        if(checkAuthorization(user, comment)) {
+            commentRepository.delete(comment);
+            log.info("댓글 삭제 완료");
+        }
+    }
     private Comment findCommentById(Long commentId){
+        log.info("댓글 조회 시작");
         return commentRepository.findById(commentId).orElseThrow(()->
                 new IllegalArgumentException("해당 댓글은 존재하지 않스니다."));
     }
     private boolean checkAuthorization(User user, Comment comment){
+        log.info("작성자 인가 확인");
         if(comment.getUser().getUsername().equals(user.getUsername())){
             return true;
         }else throw new IllegalArgumentException("작성자만 접근할 수 있습니다.");
     }
-
 }
