@@ -9,10 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 @Slf4j(topic = "PostController")
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor
@@ -24,5 +22,11 @@ public class PostController {
     public ResponseEntity<Object> post(@RequestBody PostRequestDTO postRequestDTO,
                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
         return ResponseEntity.status(HttpStatus.OK).body(postService.post(postRequestDTO, userDetails.getUser()));
+    }
+    @PutMapping("/{postId}")
+    public ResponseEntity<Object> update(@RequestBody PostRequestDTO postRequestDTO,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                         @PathVariable Long postId){
+        return ResponseEntity.status(HttpStatus.OK).body(postService.update(postRequestDTO, userDetails.getUser(), postId));
     }
 }

@@ -28,18 +28,19 @@ public class Post {
     @Column
     private String contents;
 
-    @Column
-    private String author;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     @Builder
-    public Post(String title, String contents, String author, User user) {
+    public Post(String title, String contents, User user) {
         this.title = title;
         this.contents = contents;
-        this.author = author;
         this.user = user;
+    }
+
+    public void updatePost(String title, String contents){
+        this.title = title;
+        this.contents = contents;
     }
 }

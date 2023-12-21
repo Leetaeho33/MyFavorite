@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.dialect.PostgreSQLJsonPGObjectJsonbType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Slf4j(topic = "postService")
@@ -18,10 +21,35 @@ public class PostService {
 
     public PostResponseDTO post(PostRequestDTO postRequestDTO, User user) {
         Post post = Post.builder().title(postRequestDTO.getTitle()).contents(postRequestDTO.getContents())
-                .author(user.getNickname()).user(user).build();
+                .user(user).build();
         postRepository.save(post);
+        log.info("게시글 저장 성공");
         return PostResponseDTO.builder().title(post.getTitle()).
                 contents(post.getContents()).author(user.getNickname()).build();
     }
 
+    @Transactional
+    public PostResponseDTO update(PostRequestDTO postRequestDTO, User user, Long postId) {
+        Post post = findPostById(postId);
+        checkAuthor(user.getUsername(), postId);
+        log.info("게시글 및 작성자 확인 완료");
+        post.updatePost(postRequestDTO.getTitle(), postRequestDTO.getContents());
+        log.info("게시글 업데이트 완료");
+        return PostResponseDTO.builder().title(post.getTitle()).
+                contents(post.getContents()).author(user.getNickname()).build();
+    }
+
+    private Post findPostById(Long postId){
+        log.info("게시물 검색");
+        return postRepository.findById(postId).orElseThrow(
+                ()-> new IllegalArgumentException("해당 게시물은 존재하지 않습니다."));
+    }
+
+    private boolean checkAuthor(String username, Long postId){
+        log.info("작성자 확인");
+        if(findPostById(postId).getUser().getUsername().equals(username)){
+            return true;
+        }else throw new IllegalArgumentException("작성자만 접근할 수 있습니다.");
+    }
 }
+
