@@ -17,11 +17,11 @@ public class PostResponseDTO {
     LocalDateTime createdAt;
     LocalDateTime modifiedAt;
 
-    @Builder
-    public PostResponseDTO(String title, String contents, String author, Post post) {
-        this.title = title;
-        this.contents = contents;
-        this.author = author;
+
+    public PostResponseDTO(Post post) {
+        this.title = post.getTitle();
+        this.contents = post.getContents();
+        this.author = post.getUser().getNickname();
         this.createdAt = post.getCreatedAt();
         this.modifiedAt = post.getModifiedAt();
     }

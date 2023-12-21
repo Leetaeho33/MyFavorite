@@ -36,4 +36,9 @@ public class PostController {
         postService.delete(userDetails.getUser(), postId);
         return ResponseEntity.status(HttpStatus.OK).body("게시글이 삭제되었습니다.");
     }
+
+    @GetMapping
+    public ResponseEntity<Object> getAll(){
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getAll());
+    }
 }

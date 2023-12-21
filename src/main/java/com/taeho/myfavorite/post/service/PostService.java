@@ -8,9 +8,12 @@ import com.taeho.myfavorite.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.dialect.PostgreSQLJsonPGObjectJsonbType;
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,8 +27,7 @@ public class PostService {
                 .user(user).build();
         postRepository.save(post);
         log.info("게시글 저장 성공");
-        return PostResponseDTO.builder().title(post.getTitle()).
-                contents(post.getContents()).author(user.getNickname()).post(post).build();
+        return new PostResponseDTO(post);
     }
 
     @Transactional
@@ -33,8 +35,7 @@ public class PostService {
         Post post = checkAuthorization(user.getUsername(), postId);
         post.updatePost(postRequestDTO.getTitle(), postRequestDTO.getContents());
         log.info("게시글 업데이트 완료");
-        return PostResponseDTO.builder().title(post.getTitle()).
-                contents(post.getContents()).author(user.getNickname()).post(post).build();
+        return new PostResponseDTO(post);
     }
 
     @Transactional
@@ -63,6 +64,17 @@ public class PostService {
         checkAuthor(username, postId);
         log.info("게시글 및 작성자 확인 완료");
         return post;
+    }
+
+    public List<PostResponseDTO> getAll() {
+        List<Post> postList = postRepository.findAllByOrderByCreatedAtDesc();
+        List<PostResponseDTO> postResponseDTOList = new ArrayList<>();
+        if(!postList.isEmpty()){
+            for(Post post : postList){
+                postResponseDTOList.add(new PostResponseDTO(post));
+            }
+        }else throw new IllegalArgumentException("게시글이 하나도 존재하지 않습니다.");
+        return postResponseDTOList;
     }
 }
 
