@@ -9,9 +9,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.dialect.PostgreSQLJsonPGObjectJsonbType;
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +46,23 @@ public class PostService {
         postRepository.delete(post);
         log.info("게시글 삭제 완료");
     }
+    public List<PostResponseDTO> getAll() {
+        List<Post> postList = postRepository.findAllByOrderByCreatedAtDesc();
+        List<PostResponseDTO> postResponseDTOList = new ArrayList<>();
+        if(!postList.isEmpty()){
+            for(Post post : postList){
+                postResponseDTOList.add(new PostResponseDTO(post));
+            }
+        }else throw new IllegalArgumentException("게시글이 하나도 존재하지 않습니다.");
+        return postResponseDTOList;
+    }
 
+    @Transactional
+    @Scheduled(cron = "0/30 * * * * ?")
+    public void authDelete(){
+        log.info("게시글 자동 삭제");
+        postRepository.deleteByCreatedAtLessThanEqual(LocalDateTime.now().minusMinutes(1));
+    }
 
     private Post findPostById(Long postId){
         log.info("게시물 검색");
@@ -64,17 +82,6 @@ public class PostService {
         checkAuthor(username, postId);
         log.info("게시글 및 작성자 확인 완료");
         return post;
-    }
-
-    public List<PostResponseDTO> getAll() {
-        List<Post> postList = postRepository.findAllByOrderByCreatedAtDesc();
-        List<PostResponseDTO> postResponseDTOList = new ArrayList<>();
-        if(!postList.isEmpty()){
-            for(Post post : postList){
-                postResponseDTOList.add(new PostResponseDTO(post));
-            }
-        }else throw new IllegalArgumentException("게시글이 하나도 존재하지 않습니다.");
-        return postResponseDTOList;
     }
 }
 
