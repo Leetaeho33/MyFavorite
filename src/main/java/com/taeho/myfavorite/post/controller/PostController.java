@@ -29,4 +29,11 @@ public class PostController {
                                          @PathVariable Long postId){
         return ResponseEntity.status(HttpStatus.OK).body(postService.update(postRequestDTO, userDetails.getUser(), postId));
     }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Object> delete(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                         @PathVariable Long postId){
+        postService.delete(userDetails.getUser(), postId);
+        return ResponseEntity.status(HttpStatus.OK).body("게시글이 삭제되었습니다.");
+    }
 }

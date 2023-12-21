@@ -30,13 +30,18 @@ public class PostService {
 
     @Transactional
     public PostResponseDTO update(PostRequestDTO postRequestDTO, User user, Long postId) {
-        Post post = findPostById(postId);
-        checkAuthor(user.getUsername(), postId);
-        log.info("게시글 및 작성자 확인 완료");
+        Post post = checkAuthorization(user.getUsername(), postId);
         post.updatePost(postRequestDTO.getTitle(), postRequestDTO.getContents());
         log.info("게시글 업데이트 완료");
         return PostResponseDTO.builder().title(post.getTitle()).
                 contents(post.getContents()).author(user.getNickname()).build();
+    }
+
+    @Transactional
+    public void delete(User user, Long postId) {
+        Post post = checkAuthorization(user.getUsername(), postId);
+        postRepository.delete(post);
+        log.info("게시글 삭제 완료");
     }
 
     private Post findPostById(Long postId){
@@ -50,6 +55,13 @@ public class PostService {
         if(findPostById(postId).getUser().getUsername().equals(username)){
             return true;
         }else throw new IllegalArgumentException("작성자만 접근할 수 있습니다.");
+    }
+
+    private Post checkAuthorization(String username, Long postId){
+        Post post = findPostById(postId);
+        checkAuthor(username, postId);
+        log.info("게시글 및 작성자 확인 완료");
+        return post;
     }
 }
 
