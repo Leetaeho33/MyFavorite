@@ -10,6 +10,7 @@ import com.taeho.myfavorite.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,4 +26,26 @@ public class CommentService {
         log.info("댓글 저장 완료");
         return new CommenetResponseDTO(comment);
     }
+
+    @Transactional
+    public CommenetResponseDTO update(CommentRequestDTO requestDTO, User user, Long commentId) {
+        log.info("댓글 수정 시작");
+        Comment comment = findCommentById(commentId);
+        if(checkAuthorization(user, comment)){
+            comment.updateComment(requestDTO);
+        }
+        log.info("댓글 수정 완료");
+        return new CommenetResponseDTO(comment);
+    }
+
+    private Comment findCommentById(Long commentId){
+        return commentRepository.findById(commentId).orElseThrow(()->
+                new IllegalArgumentException("해당 댓글은 존재하지 않스니다."));
+    }
+    private boolean checkAuthorization(User user, Comment comment){
+        if(comment.getUser().getUsername().equals(user.getUsername())){
+            return true;
+        }else throw new IllegalArgumentException("작성자만 접근할 수 있습니다.");
+    }
+
 }

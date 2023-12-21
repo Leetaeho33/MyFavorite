@@ -21,5 +21,6 @@ public class CommenetResponseDTO {
         this.text = comment.getText();
         this.author = comment.getUser().getNickname();
         this.createdAt = LocalDateTime.now();
+        this.modifiedAt = comment.getModifiedAt();
     }
 }

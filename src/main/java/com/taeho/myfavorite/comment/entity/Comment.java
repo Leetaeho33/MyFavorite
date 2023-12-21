@@ -7,12 +7,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table
 @Getter
+@NoArgsConstructor
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,5 +44,9 @@ public class Comment {
         this.user = user;
         this.post = post;
         this.createdAt = LocalDateTime.now();
+    }
+    public void updateComment(CommentRequestDTO commentRequestDTO){
+        this.text = commentRequestDTO.getText();
+        this.modifiedAt = LocalDateTime.now();
     }
 }
