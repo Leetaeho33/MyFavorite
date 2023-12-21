@@ -25,7 +25,7 @@ public class PostService {
         postRepository.save(post);
         log.info("게시글 저장 성공");
         return PostResponseDTO.builder().title(post.getTitle()).
-                contents(post.getContents()).author(user.getNickname()).build();
+                contents(post.getContents()).author(user.getNickname()).post(post).build();
     }
 
     @Transactional
@@ -34,7 +34,7 @@ public class PostService {
         post.updatePost(postRequestDTO.getTitle(), postRequestDTO.getContents());
         log.info("게시글 업데이트 완료");
         return PostResponseDTO.builder().title(post.getTitle()).
-                contents(post.getContents()).author(user.getNickname()).build();
+                contents(post.getContents()).author(user.getNickname()).post(post).build();
     }
 
     @Transactional
@@ -43,6 +43,7 @@ public class PostService {
         postRepository.delete(post);
         log.info("게시글 삭제 완료");
     }
+
 
     private Post findPostById(Long postId){
         log.info("게시물 검색");

@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.net.UnknownServiceException;
+import java.time.LocalDateTime;
 
 @Entity
 @Table
@@ -28,6 +29,12 @@ public class Post {
     @Column
     private String contents;
 
+    @Column
+    private LocalDateTime createdAt;
+
+    @Column
+    private LocalDateTime modifiedAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -37,10 +44,12 @@ public class Post {
         this.title = title;
         this.contents = contents;
         this.user = user;
+        this.createdAt = LocalDateTime.now();
     }
 
     public void updatePost(String title, String contents){
         this.title = title;
         this.contents = contents;
+        this.modifiedAt = LocalDateTime.now();
     }
 }
