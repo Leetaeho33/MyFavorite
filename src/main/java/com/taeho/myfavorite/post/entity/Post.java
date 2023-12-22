@@ -1,5 +1,6 @@
 package com.taeho.myfavorite.post.entity;
 
+import com.taeho.myfavorite.comment.entity.Comment;
 import com.taeho.myfavorite.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.net.UnknownServiceException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table
@@ -38,6 +40,9 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    List<Comment> commentList;
 
     @Builder
     public Post(String title, String contents, User user) {
