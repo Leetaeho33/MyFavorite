@@ -1,6 +1,6 @@
 package com.taeho.myfavorite.comment.service;
 
-import com.taeho.myfavorite.comment.dto.CommenetResponseDTO;
+import com.taeho.myfavorite.comment.dto.CommentResponseDTO;
 import com.taeho.myfavorite.comment.dto.CommentRequestDTO;
 import com.taeho.myfavorite.comment.entity.Comment;
 import com.taeho.myfavorite.comment.repository.CommentRepository;
@@ -18,24 +18,24 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final PostService postService;
-    public CommenetResponseDTO post(CommentRequestDTO requestDTO, User user, Long postId) {
+    public CommentResponseDTO post(CommentRequestDTO requestDTO, User user, Long postId) {
         log.info("댓글 저장 시작");
         Post post = postService.findPostById(postId);
         Comment comment = new Comment(requestDTO, user, post);
         commentRepository.save(comment);
         log.info("댓글 저장 완료");
-        return new CommenetResponseDTO(comment);
+        return new CommentResponseDTO(comment);
     }
 
     @Transactional
-    public CommenetResponseDTO update(CommentRequestDTO requestDTO, User user, Long commentId) {
+    public CommentResponseDTO update(CommentRequestDTO requestDTO, User user, Long commentId) {
         log.info("댓글 수정 시작");
         Comment comment = findCommentById(commentId);
         if(checkAuthorization(user, comment)){
             comment.updateComment(requestDTO);
         }
         log.info("댓글 수정 완료");
-        return new CommenetResponseDTO(comment);
+        return new CommentResponseDTO(comment);
     }
 
     @Transactional
